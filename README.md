@@ -1,6 +1,6 @@
 # java-filmorate
 ## DB Diagram
-https://github.com/GlebInside/filmorate/blob/add-friends-likes/DBDiagram.png
+https://github.com/GlebInside/filmorate/blob/DBDiagram/DB%20Diagram.png
 ### SQL query examples
 1. Get top 10 films by likes: 
 
