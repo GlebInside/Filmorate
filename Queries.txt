@@ -1,4 +1,4 @@
-Get top 10 films by likes:
+ Get top 10 films by likes:
 select title, count(*) from films inner join likes on films.id = likes.film_id group by title order by 2 desc limit 10
 
 Get incoming friedshipRequests for user with id = @user_id:

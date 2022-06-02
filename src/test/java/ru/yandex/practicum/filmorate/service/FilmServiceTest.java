@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
@@ -21,7 +22,7 @@ class FilmServiceTest {
         var service = new FilmService(filmStorage, null);
         var films = service.getMostPopular(10).collect(Collectors.toUnmodifiableList());
         assertEquals(10, films.size());
-        assertTrue(films.stream().allMatch(x -> x.getLikesCount() > 89));
+        assertTrue(films.stream().allMatch(x -> x.obtainLikesCount() > 89));
     }
 
     private List<User> createUsers(int n) {
@@ -37,9 +38,15 @@ class FilmServiceTest {
 
     private void addFilms(InMemoryFilmStorage storage, int count, List<User> users) {
         for (int i = 0; i < count; i++) {
-            var film = new Film(i, "film" + i, "", LocalDate.now(), i + 1);
+            var film = Film.builder()
+                    .id(i)
+                    .name("film" + i)
+            .releaseDate(LocalDate.now())
+            .duration(i + 1)
+            .mpa(Mpa.G())
+                    .build();
             for (int j = 0; j < i; j++) {
-                film.addLike(users.get(j));
+                storage.addLike(i, j);
             }
             storage.addFilm(film);
         }

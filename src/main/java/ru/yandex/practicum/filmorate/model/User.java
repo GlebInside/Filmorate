@@ -22,11 +22,5 @@ public class User {
     private String name;
     private LocalDate birthday;
 
-    public void like(Film film) {
-        film.addLike(this);
-    }
 
-    public void unlike(Film film) {
-        film.deleteLike(this.id);
-    }
 }
