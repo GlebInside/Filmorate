@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -26,13 +27,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class UserControllerTest {
     @Autowired
+    @Qualifier("UserDbStorage")
     private UserStorage userStorage;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
 
-    private User getValidUser() {
+    public static User getValidUser() {
         var user = new User();
         user.setName("qwe");
         user.setEmail("1@mail.com");
@@ -84,6 +86,7 @@ public class UserControllerTest {
     @Test
     public void testPut() throws Exception {
         User user = getValidUser();
+        user = userStorage.addUser(user);
         user.setLogin("ddd");
         this
                 .mockMvc

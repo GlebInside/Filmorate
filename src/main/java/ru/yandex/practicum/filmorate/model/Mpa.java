@@ -12,6 +12,6 @@ public class Mpa {
     private String name;
 
     public static Mpa G() {
-        return new Mpa(1,"G");
+        return new Mpa(1, "G");
     }
 }

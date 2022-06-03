@@ -1,18 +1,17 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Component
 @Slf4j
+@Qualifier("InMemoryUserStorage")
 public class InMemoryUserStorage implements UserStorage {
 
     private Map<Integer, User> users = new HashMap<>();
@@ -35,11 +34,12 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void addUser(User user) {
+    public User addUser(User user) {
         validate(user);
         user.setId(lastId++);
         users.put(user.getId(), user);
         log.debug("user {} has been added", users.toString().toUpperCase());
+        return user;
     }
 
     @Override
@@ -51,11 +51,16 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getById(Integer userId) {
+    public User getById(int userId) {
         if (!users.containsKey(userId)) {
             throw new NoSuchElementException();
         }
         return users.get(userId);
+    }
+
+    @Override
+    public Optional<User> findUserById(int userId) {
+        return Optional.empty();
     }
 
     private void validate(User user) {

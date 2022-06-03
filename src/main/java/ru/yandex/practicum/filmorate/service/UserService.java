@@ -17,7 +17,6 @@ public class UserService {
         for (int u : user.getFriends()) {
             for (int u2 : user2.getFriends()) {
                 if (u == u2) {
-//                    if (u == u2 && u2 != user.getId() && u2 != user2.getId()) {
                     mutualFriends.add(u);
                 }
             }
@@ -28,7 +27,6 @@ public class UserService {
     public void addFriend(User user, User user2) {
         if (!(user.getFriends().contains(user2.getId()))) {
             user.getFriends().add(user2.getId());
-//            user2.getFriends().add(user.getId());
         } else {
             log.error("User " + user + " is in your friends list already");
         }

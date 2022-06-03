@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -11,9 +13,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -24,9 +28,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureTestDatabase
 class FilmControllerTest {
 
     @Autowired
+    @Qualifier("FilmDbStorage")
     private FilmStorage filmStorage;
 
     @Autowired
@@ -37,11 +43,14 @@ class FilmControllerTest {
 
 
     private Film getValidFilm() {
-        var film = new Film();
-        film.setName("qwe");
-        film.setDescription("descr");
-        film.setReleaseDate(LocalDate.of(1900, 1, 1));
-        film.setDuration(10);
+        var film = Film.builder()
+                .name("qwe")
+                .description("descr")
+                .releaseDate(LocalDate.of(1900, 12, 1))
+                .duration(10)
+                .mpa(Mpa.G())
+                .likes(new HashSet<>())
+                .build();
         return film;
     }
 
@@ -88,8 +97,9 @@ class FilmControllerTest {
 
     @Test
     public void testPut() throws Exception {
-        Film film = getValidFilm();
-
+        var film = getValidFilm();
+        var filmId = filmStorage.addFilm(film);
+        film.setId(filmId);
         film.setDescription("ddd");
         this
                 .mockMvc

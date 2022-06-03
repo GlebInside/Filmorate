@@ -44,13 +44,12 @@ public class InMemoryFilmStorage implements FilmStorage {
 
 
     public Integer addFilm(@Valid Film film) {
-//        if (film.getMpa().getId()==5)
         film.getMpa().setName("todo: remove");
         validate(film);
         film.setId(lastId++);
         films.put(film.getId(), film);
         log.debug("film {} has been added", film.getName().toUpperCase());
-        return  film.getId();
+        return film.getId();
     }
 
 

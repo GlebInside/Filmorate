@@ -25,8 +25,8 @@ public class UserController {
     private final UserStorage userStorage;
     private final UserService service;
 
-    public UserController(UserStorage inMemoryUserStorage, UserService service) {
-        this.userStorage = inMemoryUserStorage;
+    public UserController(UserStorage userDbStorage, UserService service) {
+        this.userStorage = userDbStorage;
         this.service = service;
     }
 
@@ -53,8 +53,7 @@ public class UserController {
 
     @PostMapping
     private User addUser(@Valid @RequestBody User user) {
-        userStorage.addUser(user);
-        return user;
+        return userStorage.addUser(user);
     }
 
     @PutMapping
