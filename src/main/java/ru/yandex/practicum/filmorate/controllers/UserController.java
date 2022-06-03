@@ -1,8 +1,10 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.pool.TypePool;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -46,7 +48,7 @@ public class UserController {
     private User getUser(@PathVariable("id") Integer id) {
         try {
             return userStorage.getById(id);
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
@@ -61,7 +63,7 @@ public class UserController {
         try {
             userStorage.updateUser(user);
             return user;
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
@@ -73,9 +75,9 @@ public class UserController {
             var friend = userStorage.getById(friendId);
             service.addFriend(user, friend);
             userStorage.updateUser(user);
-            userStorage.updateUser(friend);
+//            userStorage.updateUser(friend);
             return user;
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }

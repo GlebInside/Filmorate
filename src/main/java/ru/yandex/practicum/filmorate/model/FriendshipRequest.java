@@ -1,16 +1,12 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Getter;
+import lombok.*;
 
-@Getter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FriendshipRequest {
-    private final User from;
-    private final User to;
-    private FriendshipRequestStatus status = FriendshipRequestStatus.Awaiting;
-
-    public FriendshipRequest(User initiator, User to) {
-
-        this.from = initiator;
-        this.to = to;
-    }
+    private int from;
+    private int to;
 }
