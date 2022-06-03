@@ -15,6 +15,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -40,6 +41,7 @@ public class UserControllerTest {
         user.setEmail("1@mail.com");
         user.setLogin("vvv");
         user.setBirthday(LocalDate.of(1990, 1, 1));
+        user.setFriends(new HashSet<>());
         return user;
     }
 

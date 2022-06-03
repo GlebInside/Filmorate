@@ -59,6 +59,16 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
+    public void addFriend(int from, int to) {
+        throw new NoSuchElementException();
+    }
+
+    @Override
+    public void deleteFriend(Integer userId, Integer friendId) {
+        throw new NoSuchElementException();
+    }
+
+    @Override
     public Optional<User> findUserById(int userId) {
         return Optional.empty();
     }

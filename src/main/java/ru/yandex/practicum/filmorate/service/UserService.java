@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
@@ -33,20 +32,11 @@ public class UserService {
         return mutualFriends;
     }
 
-    public void addFriend(User user, User user2) {
-        if (!(user.getFriends().contains(user2.getId()))) {
-//            userStorage
-            user.getFriends().add(user2.getId());
-        } else {
-            log.error("User " + user + " is in your friends list already");
-        }
-    }
 
     public void deleteFriend(User user, User user2) {
         if (!user.getFriends().contains(user2.getId())) {
             throw new NoSuchElementException();
         }
         user.getFriends().remove(user2.getId());
-//        user2.getFriends().remove(user.getId());
     }
 }

@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -17,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class User {
 
-    private final Set<Integer> friends = new HashSet<>();
+    private Set<Integer> friends;
 
     private int id;
 

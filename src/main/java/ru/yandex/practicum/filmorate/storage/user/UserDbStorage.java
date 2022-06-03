@@ -10,13 +10,12 @@ import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Repository
@@ -79,6 +78,15 @@ public class UserDbStorage implements UserStorage {
         return jdbcTemplate.queryForObject("select * from users where id = ?", this::mapRowToUser, userId);
     }
 
+    @Override
+    public void addFriend(int from, int to) {
+        jdbcTemplate.update("insert into friendship_requests (from_id, to_id) values (?, ?)", from, to);
+    }
+
+    @Override
+    public void deleteFriend(Integer from, Integer to) {
+        jdbcTemplate.update("delete from friendship_requests where from_id = ? and to_id = ?", from, to);
+    }
 
     private User mapRowToUser(ResultSet resultSet, int i) throws SQLException {
         var userId = resultSet.getInt("id");
@@ -89,7 +97,14 @@ public class UserDbStorage implements UserStorage {
                 .email(resultSet.getString("email"))
                 .birthday(resultSet.getDate("birthday").toLocalDate())
                 .login(resultSet.getString("login"))
+                .friends(loadFriends(userId))
                 .build();
+    }
+
+    private Set<Integer> loadFriends(int userId) {
+        var rows = jdbcTemplate.query("select * from friendship_requests where from_id = ? ",
+                (resultSet, i) -> resultSet.getInt("to_id"), userId);
+        return new HashSet<>(rows);
     }
 
     private void validate(User user) {

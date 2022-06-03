@@ -3,6 +3,7 @@ drop table if exists films;
 drop table if exists mpa;
 drop table if exists friendship_requests;
 drop table if exists users;
+
 create table if not exists mpa
 (
     id   int primary key,
@@ -41,9 +42,9 @@ create table if not exists likes
 create table if not exists friendship_requests
 (
     from_id int not null,
-    to_id int not null,
+    to_id   int not null,
     foreign key (from_id) references users (id),
-        foreign key (to_id) references users (id),
+    foreign key (to_id) references users (id),
     primary key (from_id, to_id)
 );
 
