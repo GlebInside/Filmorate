@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.getMpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -57,7 +57,7 @@ class FilmServiceTest {
                     .description("descr" + i)
                     .releaseDate(LocalDate.now())
                     .duration(i + 1)
-                    .mpa(Mpa.G())
+                    .mpa(new getMpa(1, "G"))
                     .build();
             for (int j = 1; j < i; j++) {
                 storage.addLike(i, j);

@@ -8,7 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.getMpa;
 
 import javax.validation.Valid;
 import java.sql.Date;
@@ -40,7 +40,7 @@ public class FilmDbStorage implements FilmStorage {
 
     public Integer addFilm(@Valid Film film) {
         validate(film);
-        String sqlQuery = "insert into films(name, description, duration, release_date, mpa_id) values (?, ?, ?, ?, ?)";
+        final String sqlQuery = "insert into films(name, description, duration, release_date, mpa_id) values (?, ?, ?, ?, ?)";
         System.out.println(film.getReleaseDate());
         System.out.println(Date.valueOf(film.getReleaseDate()));
         var keyHolder = new GeneratedKeyHolder();
@@ -61,8 +61,7 @@ public class FilmDbStorage implements FilmStorage {
     public void updateFilm(Film film) {
         getById(film.getId());
         validate(film);
-        var sql = "update films set name = ?, description = ?, duration = ?, release_date = ?, mpa_id = ?";
-        sql += "\nwhere id = ?";
+        final String sql = "update films set name = ?, description = ?, duration = ?, release_date = ?, mpa_id = ? where id = ?";
         var r = jdbcTemplate.update(sql,
                 film.getName(),
                 film.getDescription(),
@@ -77,18 +76,20 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getById(int filmId) {
-        return jdbcTemplate.queryForObject("select * from films where id = ?", this::mapRowToFilm, filmId);
+        final String sql = "select * from films where id = ?";
+        return jdbcTemplate.queryForObject(sql, this::mapRowToFilm, filmId);
     }
 
     @Override
     public void addLike(int filmId, int userId) {
-        jdbcTemplate.update("insert into likes (film_id, user_id) values (?, ?)",
-                filmId, userId);
+        final String sql = "insert into likes (film_id, user_id) values (?, ?)";
+        jdbcTemplate.update(sql, filmId, userId);
     }
 
     @Override
     public void deleteLike(int filmId, int userId) {
-        var rowsAffected = jdbcTemplate.update("delete from likes where film_id = ? and user_id  = ?",
+        final String sql = "delete from likes where film_id = ? and user_id  = ?";
+        var rowsAffected = jdbcTemplate.update(sql,
                 filmId, userId);
         if (rowsAffected != 1) {
             throw new NoSuchElementException();
@@ -97,7 +98,7 @@ public class FilmDbStorage implements FilmStorage {
 
     private Film mapRowToFilm(ResultSet resultSet, int i) throws SQLException {
         var filmId = resultSet.getInt("id");
-        var mpa_id = resultSet.getInt("mpa_id");
+        var mpaId = resultSet.getInt("mpa_id");
 
         System.out.println(resultSet.getDate("release_date"));
         System.out.println(resultSet.getDate("release_date").toLocalDate());
@@ -107,22 +108,24 @@ public class FilmDbStorage implements FilmStorage {
                 .description(resultSet.getString("description"))
                 .duration(resultSet.getInt("duration"))
                 .releaseDate(resultSet.getDate("release_date").toLocalDate())
-                .mpa(getMpaById(mpa_id))
+                .mpa(getMpaById(mpaId))
                 .likes(getLikes(filmId))
                 .build();
     }
 
     private Set<Integer> getLikes(int filmId) {
+        final String sql = "select user_id from likes where film_id = ?";
         var rows = jdbcTemplate.query(
-                "select user_id from likes where film_id = ?",
+                sql,
                 (rs, i) -> rs.getInt("user_id"),
                 filmId);
         return new HashSet<>(rows);
     }
 
-    private Mpa getMpaById(int mpa_id) {
-        return jdbcTemplate.queryForObject("select * from mpa where id = ?",
-                (resultSet, i) -> new Mpa(resultSet.getInt("id"), resultSet.getString("name")), mpa_id);
+    private getMpa getMpaById(int mpa_id) {
+        final String sql = "select * from mpa where id = ?";
+        return jdbcTemplate.queryForObject(sql,
+                (resultSet, i) -> new getMpa(resultSet.getInt("id"), resultSet.getString("name")), mpa_id);
     }
 
 

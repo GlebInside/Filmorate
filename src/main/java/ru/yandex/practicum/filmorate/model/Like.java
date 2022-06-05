@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class Like {
     @NotNull
-    private int film_id;
+    private int filmId;
     @NotNull
-    private int user_id;
+    private int userId;
 }

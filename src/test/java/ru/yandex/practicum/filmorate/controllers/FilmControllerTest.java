@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.getMpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.time.LocalDate;
@@ -48,7 +48,7 @@ class FilmControllerTest {
                 .description("descr")
                 .releaseDate(LocalDate.of(1900, 12, 1))
                 .duration(10)
-                .mpa(Mpa.G())
+                .mpa(new getMpa(1, "G"))
                 .likes(new HashSet<>())
                 .build();
         return film;

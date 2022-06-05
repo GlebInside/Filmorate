@@ -37,8 +37,8 @@ public class FilmController {
 
     @PostMapping
     private Film addFilm(@Valid @RequestBody Film film) {
-        var film_id = filmStorage.addFilm(film);
-        return filmStorage.getById(film_id);
+        var filmId = filmStorage.addFilm(film);
+        return filmStorage.getById(filmId);
     }
 
     @GetMapping("/{id}")

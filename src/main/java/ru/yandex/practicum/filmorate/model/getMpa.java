@@ -7,11 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Mpa {
+public class getMpa {
     private Integer id;
     private String name;
 
-    public static Mpa G() {
-        return new Mpa(1, "G");
-    }
 }

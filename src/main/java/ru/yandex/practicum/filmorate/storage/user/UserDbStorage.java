@@ -35,7 +35,7 @@ public class UserDbStorage implements UserStorage {
 
     public User addUser(@Valid User user) {
         validate(user);
-        String sqlQuery = "insert into users(email, birthday, name, login) values (?, ?, ?, ?)";
+        final String sqlQuery = "insert into users(email, birthday, name, login) values (?, ?, ?, ?)";
         var keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             var preparedStatement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
@@ -53,8 +53,7 @@ public class UserDbStorage implements UserStorage {
     public void updateUser(User user) {
         getById(user.getId());
         validate(user);
-        var sql = "update users set email= ?, birthday = ?, name = ?, login = ?";
-        sql += "\nwhere id = ?";
+        final String sql = "update users set email= ?, birthday = ?, name = ?, login = ? where id = ?";
         var r = jdbcTemplate.update(sql,
                 user.getEmail(),
                 user.getBirthday(),
@@ -66,7 +65,8 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Optional<User> findUserById(int userId) {
-        var users = jdbcTemplate.query("select * from users where id = ?", this::mapRowToUser, userId);
+        final String sql = "select * from users where id = ?";
+        var users = jdbcTemplate.query(sql, this::mapRowToUser, userId);
         if (users.isEmpty()) {
             return Optional.empty();
         }
@@ -75,17 +75,20 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User getById(int userId) {
-        return jdbcTemplate.queryForObject("select * from users where id = ?", this::mapRowToUser, userId);
+        final String sql = "select * from users where id = ?";
+        return jdbcTemplate.queryForObject(sql, this::mapRowToUser, userId);
     }
 
     @Override
     public void addFriend(int from, int to) {
-        jdbcTemplate.update("insert into friendship_requests (from_id, to_id) values (?, ?)", from, to);
+        final String sql = "insert into friendship_requests (from_id, to_id) values (?, ?)";
+        jdbcTemplate.update(sql, from, to);
     }
 
     @Override
     public void deleteFriend(Integer from, Integer to) {
-        jdbcTemplate.update("delete from friendship_requests where from_id = ? and to_id = ?", from, to);
+        final String sql = "delete from friendship_requests where from_id = ? and to_id = ?";
+        jdbcTemplate.update(sql, from, to);
     }
 
     private User mapRowToUser(ResultSet resultSet, int i) throws SQLException {
@@ -102,7 +105,8 @@ public class UserDbStorage implements UserStorage {
     }
 
     private Set<Integer> loadFriends(int userId) {
-        var rows = jdbcTemplate.query("select * from friendship_requests where from_id = ? ",
+        final String sql = "select * from friendship_requests where from_id = ? ";
+        var rows = jdbcTemplate.query(sql,
                 (resultSet, i) -> resultSet.getInt("to_id"), userId);
         return new HashSet<>(rows);
     }
