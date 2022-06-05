@@ -8,7 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.getMpa;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import javax.validation.Valid;
 import java.sql.Date;
@@ -122,10 +122,10 @@ public class FilmDbStorage implements FilmStorage {
         return new HashSet<>(rows);
     }
 
-    private getMpa getMpaById(int mpa_id) {
+    private Mpa getMpaById(int mpa_id) {
         final String sql = "select * from mpa where id = ?";
         return jdbcTemplate.queryForObject(sql,
-                (resultSet, i) -> new getMpa(resultSet.getInt("id"), resultSet.getString("name")), mpa_id);
+                (resultSet, i) -> new Mpa(resultSet.getInt("id"), resultSet.getString("name")), mpa_id);
     }
 
 
