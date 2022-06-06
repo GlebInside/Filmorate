@@ -8,9 +8,13 @@ public interface FilmStorage {
 
     Collection<Film> getAllFilms();
 
-    void addFilm(Film film);
+    Integer addFilm(Film film);
 
     void updateFilm(Film film);
 
     Film getById(int filmId);
+
+    void addLike(int filmId, int userId);
+
+    void deleteLike(int filmId, int userId);
 }

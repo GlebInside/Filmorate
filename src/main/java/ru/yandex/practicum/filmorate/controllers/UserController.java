@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,8 +27,8 @@ public class UserController {
     private final UserStorage userStorage;
     private final UserService service;
 
-    public UserController(UserStorage inMemoryUserStorage, UserService service) {
-        this.userStorage = inMemoryUserStorage;
+    public UserController(UserStorage userDbStorage, UserService service) {
+        this.userStorage = userDbStorage;
         this.service = service;
     }
 
@@ -46,15 +48,14 @@ public class UserController {
     private User getUser(@PathVariable("id") Integer id) {
         try {
             return userStorage.getById(id);
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping
     private User addUser(@Valid @RequestBody User user) {
-        userStorage.addUser(user);
-        return user;
+        return userStorage.addUser(user);
     }
 
     @PutMapping
@@ -62,7 +63,7 @@ public class UserController {
         try {
             userStorage.updateUser(user);
             return user;
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
@@ -70,13 +71,12 @@ public class UserController {
     @PutMapping("{id}/friends/{friendId}")
     private User addFriend(@PathVariable("id") Integer userId, @PathVariable("friendId") Integer friendId) {
         try {
-            var user = userStorage.getById(userId);
-            var friend = userStorage.getById(friendId);
-            service.addFriend(user, friend);
-            userStorage.updateUser(user);
-            userStorage.updateUser(friend);
-            return user;
-        } catch (NoSuchElementException e) {
+            userStorage.addFriend(userId, friendId);
+            return userStorage.getById(userId);
+        } catch (NoSuchElementException | DataIntegrityViolationException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
@@ -84,13 +84,9 @@ public class UserController {
     @DeleteMapping("{id}/friends/{friendId}")
     private User deleteFriend(@PathVariable("id") Integer userId, @PathVariable("friendId") Integer friendId) {
         try {
-            var user = userStorage.getById(userId);
-            var friend = userStorage.getById(friendId);
-            service.deleteFriend(user, friend);
-            userStorage.updateUser(user);
-            userStorage.updateUser(friend);
-            return user;
-        } catch (NoSuchElementException e) {
+            userStorage.deleteFriend(userId, friendId);
+            return userStorage.getById(userId);
+        } catch (NoSuchElementException | EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
