@@ -6,7 +6,7 @@
 
 <img src="https://img.shields.io/badge/java-18-orange.svg">
 
-<img src="https://img.shields.io/github/languages/top/glebinside/StepTracker.svg">
+<img src="https://img.shields.io/github/languages/top/glebinside/filmorate.svg">
 
 </p>
 
